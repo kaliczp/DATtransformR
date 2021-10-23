@@ -16,5 +16,11 @@ DAT_read <- function(file, table.name = "T_PONT*") {
     } else {
         table.tail <- length(source.data)
     }
-    source.data[table.head: table.tail]
+    ## Substract table
+    raw.table <- source.data[table.head: table.tail]
+    ## Split information at * separator
+    raw.table.atomic <- unlist(strsplit(raw.table, "\\*"))
+    ## Build data.frame from splitted data
+    table.rows <- length(raw.table)
+    as.data.frame(matrix(raw.table.atomic, nrow = table.rows, byrow=TRUE))
 }
