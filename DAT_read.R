@@ -1,4 +1,4 @@
-DAT_read <- function(file, table.name = "T_PONT*") {
+DAT_read <- function(file, table.name = "T_PONT*", numeric.table = FALSE) {
     ## Read source data
     source.data <- readLines(file, encoding = "latin1")
     ## Search indices of table titles
@@ -20,6 +20,10 @@ DAT_read <- function(file, table.name = "T_PONT*") {
     raw.table <- source.data[table.head: table.tail]
     ## Split information at * separator
     raw.table.atomic <- unlist(strsplit(raw.table, "\\*"))
+    ## Numeric table is converted from character in one step if flag activated
+    if(numeric.table) {
+        raw.table.atomic <- as.numeric(raw.table.atomic)
+    }
     ## Build data.frame from splitted data
     table.rows <- length(raw.table)
     as.data.frame(matrix(raw.table.atomic, nrow = table.rows, byrow=TRUE))
