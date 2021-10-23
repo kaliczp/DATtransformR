@@ -9,7 +9,12 @@ DAT_read <- function(file, table.name = "T_PONT*") {
     tables.name.idx <- which(tables.name == table.name)
     ## Table begins after the title of the selected table
     table.head <- tables.start[tables.name.idx] + 1
-    ## Table ends before the next title
-    table.tail <- tables.start[tables.name.idx + 1] - 1
+    ## Table ends before the next title or at the last row of the file
+    next.name.idx <- tables.name.idx + 1
+    if(next.name.idx <= length(tables.start)) {
+        table.tail <- tables.start[next.name.idx] - 1
+    } else {
+        table.tail <- length(source.data)
+    }
     source.data[table.head: table.tail]
 }
