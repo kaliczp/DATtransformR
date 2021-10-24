@@ -16,4 +16,5 @@ CurrTextAngle[CurrTextAngle < 0] <- CurrTextAngle[CurrTextAngle < 0] + 180
 
 curr.list$T_FELIRAT$Angle <- round(CurrTextAngle, 1)
 
+DAT_write(curr.list, "teszt.dat")
 ## DAT_modify_table(curr.list, "teszt.dat", "teszt1.dat", table.name = "T_FELIRAT*")
