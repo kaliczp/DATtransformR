@@ -1,12 +1,17 @@
-DAT_read <- function(file, table.name = "T_PONT*", numeric.table = FALSE) {
+DAT_read <- function(file) {
     ## Read source data
-    source.data <- readLines(file, encoding = "latin1")
+    connsource.file <- file(file, "r")
+    source.data <- readLines(connsource.file, encoding = "latin1")
+    close(connsource.file)
     ## Search indices of table titles
     tables.start <- grep("^T_", source.data)
     ## Vector of table titles
     tables.name <- source.data[tables.start]
-    ## Title index of the selected table
-    tables.name.idx <- which(tables.name == table.name)
+    ## Empty list creation
+    database.list <- list()
+    ## Read header
+    database.list[[1]] <- unlist(strsplit(source.data[1], "\\*"))
+    for(tables.name.idx in 1:length(tables.start)) {
     ## Table begins after the title of the selected table
     table.head <- tables.start[tables.name.idx] + 1
     ## Table ends before the next title or at the last row of the file
@@ -21,10 +26,15 @@ DAT_read <- function(file, table.name = "T_PONT*", numeric.table = FALSE) {
     ## Split information at * separator
     raw.table.atomic <- unlist(strsplit(raw.table, "\\*"))
     ## Numeric table is converted from character in one step if flag activated
-    if(numeric.table) {
+    if(tables.name.idx < 4) {
         raw.table.atomic <- as.numeric(raw.table.atomic)
     }
     ## Build data.frame from splitted data
     table.rows <- length(raw.table)
-    as.data.frame(matrix(raw.table.atomic, nrow = table.rows, byrow=TRUE))
+    database.list[[tables.name.idx + 1]] <- as.data.frame(matrix(raw.table.atomic, nrow = table.rows, byrow=TRUE))
+    }
+    ## Remove closing asterix from names
+    tables.name <- sub("\\*", "", tables.name)
+    names(database.list) <- c("Head", tables.name)
+    database.list
 }
