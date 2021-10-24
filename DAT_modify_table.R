@@ -19,7 +19,7 @@ DAT_modify_table <- function(data, file, new.file, table.name = "T_PONT*") {
         table.tail <- length(source.data)
     }
     writeLines(source.data[1:table.head], con = connnew.file, sep = "\r\n")
-    write.table(data, connnew.file, sep = "*", eol = "*\r\n", na = "", row.names = FALSE, col.names= FALSE, append = TRUE)
+    write.table(data, connnew.file, sep = "*", eol = "*\r\n", na = "", row.names = FALSE, col.names= FALSE, quote = FALSE, append = TRUE)
     writeLines(source.data[table.tail:length(source.data)], con = connnew.file, sep = "\r\n")
     close(connsource.file)
     close(connnew.file)
