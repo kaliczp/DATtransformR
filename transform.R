@@ -1,11 +1,14 @@
 DATfiles <- dir(patt = "dat")
 
-curr.list <- DAT_read(DATfiles[2], numeric.table = FALSE)
+curr.list <- DAT_read(DATfiles[2])
 names(curr.list$T_PONT) <- c("Nr", "x", "y", "H", "errV", "errM")
 
-curr.list$T_PONT$x <- curr.list$T_PONT$x + 10000
-curr.list$T_PONT$y <- curr.list$T_PONT$y + 10000
-curr.list$T_PONT <- eovrotate(curr.list$T_PONT, -75)
+xshift <- 200000 - max(curr.list$T_PONT$x)
+yshift  <- 900000- max(curr.list$T_PONT$y)
+
+curr.list$T_PONT$x <- curr.list$T_PONT$x + xshift
+curr.list$T_PONT$y <- curr.list$T_PONT$y + yshift
+curr.list$T_PONT <- round(eovrotate(curr.list$T_PONT, -75), 2)
 
 names(curr.list$T_FELIRAT) <- c("Nr", "Text", "Pt.id", "Angle", "Font", "Valid", "Ref.tab", "Ref.tab.line", "Type")
 
