@@ -27,7 +27,10 @@ DAT_read <- function(file) {
         raw.table.atomic <- unlist(strsplit(raw.table, "\\*"))
         ## Numeric table is converted from character in one step if flag activated
         if(tables.name.idx < 4) {
-            raw.table.atomic <- as.numeric(raw.table.atomic)
+            curr.name <- tables.name[tables.name.idx]
+            if(curr.name == "T_PONT*" || curr.name == "T_VONAL*" || curr.name == "T_HATARVONAL*") {
+                raw.table.atomic <- as.numeric(raw.table.atomic)
+            }
         }
         ## Build data.frame from splitted data
         table.rows <- length(raw.table)
