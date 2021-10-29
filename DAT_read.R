@@ -26,15 +26,25 @@ DAT_read <- function(file) {
         ## Split information at * separator
         raw.table.atomic <- unlist(strsplit(raw.table, "\\*"))
         ## Numeric table is converted from character in one step if flag activated
-        if(tables.name.idx < 4) {
-            curr.name <- tables.name[tables.name.idx]
+        curr.name <- tables.name[tables.name.idx]
+        if(tables.name.idx < 6) {
             if(curr.name == "T_PONT*" || curr.name == "T_VONAL*" || curr.name == "T_HATARVONAL*") {
                 raw.table.atomic <- as.numeric(raw.table.atomic)
+            }
+            if(curr.name == "T_HATAR*" || curr.name == "T_FELULET*") {
+                around.fac.ind <- seq(4, length(raw.table.atomic), by = 4)
+                raw.around.fac <- raw.table.atomic[around.fac.ind]
+                raw.table.atomic <- as.numeric(raw.table.atomic[-around.fac.ind])
             }
         }
         ## Build data.frame from splitted data
         table.rows <- length(raw.table)
         database.list[[tables.name.idx + 1]] <- as.data.frame(matrix(raw.table.atomic, nrow = table.rows, byrow=TRUE))
+        if(curr.name == "T_HATAR*" || curr.name == "T_FELULET*") {
+            database.list[[tables.name.idx + 1]] <- cbind(database.list[[tables.name.idx + 1]],
+                                                          as.factor(raw.around.fac)
+                                                          )
+        }
     }
     ## Remove closing asterix from names
     tables.name <- sub("\\*", "", tables.name)
