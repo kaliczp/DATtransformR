@@ -4,7 +4,7 @@ curr.list <- DAT_read(DATfiles[2])
 names(curr.list$T_PONT) <- c("Nr", "x", "y", "H", "errV", "errM")
 
 xshift <- 200000 - max(curr.list$T_PONT$x)
-yshift  <- 900000- max(curr.list$T_PONT$y)
+yshift  <- 860000- max(curr.list$T_PONT$y)
 
 curr.list$T_PONT$x <- curr.list$T_PONT$x + xshift
 curr.list$T_PONT$y <- curr.list$T_PONT$y + yshift
