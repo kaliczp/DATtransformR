@@ -19,5 +19,23 @@ CurrTextAngle[CurrTextAngle < 0] <- CurrTextAngle[CurrTextAngle < 0] + 180
 
 curr.list$T_FELIRAT$Angle <- round(CurrTextAngle, 1)
 
-DAT_write(curr.list, "teszt.dat")
+outfilename <- "teszt"
+settlement <- "Nekeresd"
+teacher <- "Kalicz Péter"
+student <- "Nagyméretarányú 1"
+act.date <- Sys.Date()
+curr.list$Head <- init <- paste(outfilename, # filename without extension
+                                paste0(settlement,"_jogerős"), # some title
+                                "Soproni Egyetem", # source organisation
+                                teacher, # resp. person
+                                "-", # target organisation
+                                student,
+                                format(act.date, "%Y%m%d"), # Actual date
+                                "", # software version
+                                "20211108 1.0", # file version
+                                sep = "*"
+                                )
+
+
+DAT_write(curr.list, paste0(outfilename, ".dat"))
 ## DAT_modify_table(curr.list, "teszt.dat", "teszt1.dat", table.name = "T_FELIRAT*")
