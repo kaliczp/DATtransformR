@@ -19,6 +19,12 @@ CurrTextAngle[CurrTextAngle < 0] <- CurrTextAngle[CurrTextAngle < 0] + 180
 
 curr.list$T_FELIRAT$Angle <- round(CurrTextAngle, 1)
 
+
+## Public area parcel ID in parentheses
+ttaktline <- curr.list$T_FELIRAT$Ref.tab == "T_OBJ_ATTRBC" & curr.list$T_FELIRAT$Type == 11
+curr.list$T_FELIRAT[ttaktline, "Text"] <- paste0("(",curr.list$T_FELIRAT[ttaktline, "Text"], ")")
+
+
 outfilename <- "teszt"
 settlement <- "Nekeresd"
 teacher <- "Kalicz Péter"
@@ -32,10 +38,9 @@ curr.list$Head <- init <- paste(outfilename, # filename without extension
                                 student,
                                 format(act.date, "%Y%m%d"), # Actual date
                                 "", # software version
-                                "20211108 1.0", # file version
+                                "20211108 1.1", # file version
                                 sep = "*"
                                 )
-
 
 DAT_write(curr.list, paste0(outfilename, ".dat"))
 ## DAT_modify_table(curr.list, "teszt.dat", "teszt1.dat", table.name = "T_FELIRAT*")
