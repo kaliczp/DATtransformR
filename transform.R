@@ -3,12 +3,12 @@ DATfiles <- dir(patt = "dat")
 curr.list <- DAT_read(DATfiles[2])
 names(curr.list$T_PONT) <- c("Nr", "x", "y", "H", "errV", "errM")
 
-xshift <- 200000 - max(curr.list$T_PONT$x)
-yshift  <- 860000- max(curr.list$T_PONT$y)
+xshift <- 220000 - max(curr.list$T_PONT$x)
+yshift  <- 840000- max(curr.list$T_PONT$y)
 
 curr.list$T_PONT$x <- curr.list$T_PONT$x + xshift
 curr.list$T_PONT$y <- curr.list$T_PONT$y + yshift
-curr.list$T_PONT <- round(eovrotate(curr.list$T_PONT, -75), 2)
+curr.list$T_PONT <- round(eovrotate(curr.list$T_PONT, -73), 2)
 
 names(curr.list$T_FELIRAT) <- c("Nr", "Text", "Pt.id", "Angle", "Font", "Valid", "Ref.tab", "Ref.tab.line", "Type")
 
@@ -26,9 +26,9 @@ curr.list$T_FELIRAT[ttaktline, "Text"] <- paste0("(",curr.list$T_FELIRAT[ttaktli
 
 
 outfilename <- "teszt"
-settlement <- "Nekeresd"
+settlement <- "Seholsincs"
 teacher <- "Kalicz Péter"
-student <- "Nagyméretarányú 1"
+student <- "Nagyméretarányú 2"
 act.date <- Sys.Date()
 curr.list$Head <- init <- paste(outfilename, # filename without extension
                                 paste0(settlement,"_jogerős"), # some title
