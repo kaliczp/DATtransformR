@@ -1,7 +1,7 @@
 DAT_read <- function(file) {
     ## Read source data
     connsource.file <- file(file, "r")
-    source.data <- readLines(connsource.file, encoding = "latin1")
+    source.data <- readLines(connsource.file)
     close(connsource.file)
     ## Search indices of table titles
     tables.start <- grep("^T_", source.data)
