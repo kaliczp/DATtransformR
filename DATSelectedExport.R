@@ -22,7 +22,6 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
         ## Correct row number to parcel ID
         parcel.row.no <- x[[DATtable]][current.parcel.ID, 1]
         parcel.row.no <- as.numeric(parcel.row.no)
-        current.parcel.ID <- as.numeric(current.parcel.ID)
         current.parcel.ID <- current.parcel.ID - (parcel.row.no - current.parcel.ID)
         assign(DATtable, x[[DATtable]][current.parcel.ID, ])
         area.ID <- c(area.ID, as.numeric(get(DATtable)[ ,3]))
@@ -31,8 +30,8 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     DATtable.row <- which(x[["T_FELULET"]][, 1] == area.ID[1])
     area <- x[["T_FELULET"]][DATtable.row,]
     if(length(area.ID) > 1) {
-        for(id in 2:length(ID)) {
-            DATtable.row <- which(x[["T_FELULET"]][, 1] == area.ID[id])
+        for(id in area.ID[-1]) {
+            DATtable.row <- which(x[["T_FELULET"]][, 1] == id)
             area <- rbind(area, x[["T_FELULET"]][DATtable.row, ])
         }
     }
