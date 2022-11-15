@@ -50,12 +50,18 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     point.IDs <- c(point.IDs, descript[,3])
     point.IDs <- unique(point.IDs)
     points <- x[["T_PONT"]][point.IDs,]
+    ## Ordinary points attributes
+    pointattr.row <- numeric()
+    for(p.id in 1:length(point.IDs))
+        pointattr.row <- c(pointattr.row,which(x$T_OBJ_ATTRAC[,4] == point.IDs[p.id]))
+    T_OBJ_ATTRAC <- x$T_OBJ_ATTRAC[pointattr.row, ]
     out.DAT <- list(Head = x$Head,
                     T_PONT = points,
                     T_VONAL = NULL,
                     T_HATARVONAL = borderlines,
                     T_HATAR = borders,
-                    T_FELULET = area
+                    T_FELULET = area,
+                    T_OBJ_ATTRAC = T_OBJ_ATTRAC
                     )
     for(DATtable in usedDATtables)
         out.DAT[[DATtable]] <- get(DATtable)
