@@ -1,27 +1,28 @@
-DATSelectedExport <- function(x, ID = c(139,140), obj = "BD") {
-    ## Area identification
-    DATtable.name <- paste0("T_OBJ_ATTR", obj)
-    DATtable.row <- which(x[[DATtable.name]][, 4] == ID[1])
-    parcel <- x[[DATtable.name]][DATtable.row, ]
-    parcel.ID  <- parcel[,1]
-    ## parcel id 
-    descript <- x[["T_FELIRAT"]][x[["T_FELIRAT"]][,"Ref.tab"] == DATtable.name &
-                                 x[["T_FELIRAT"]][,"Type"] == 11 &
-                                 x[["T_FELIRAT"]][,"Ref.tab.line"] == parcel.ID,
-                                 ]
+DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
+    ## Parcel identification based on ID
+    descript <- x$T_FELIRAT[x$T_FELIRAT$Text == ID[1],]
     if(length(ID) > 1) {
         for(id in 2:length(ID)) {
-            DATtable.row <- which(x[[DATtable.name]][, 4] == ID[id])
-            parcel <- rbind(parcel, x[[DATtable.name]][DATtable.row, ])
-            parcel.ID  <- c(parcel.ID, parcel[nrow(parcel), 1])
-            descript <- rbind(descript, x[["T_FELIRAT"]][x[["T_FELIRAT"]][,"Ref.tab"] == DATtable.name &
-                                                         x[["T_FELIRAT"]][,"Type"] == 11 &
-                                                         x[["T_FELIRAT"]][,"Ref.tab.line"] == parcel.ID[length(parcel.ID)],
-                                                         ]
-                              )
+            descript <- rbind(descript, x$T_FELIRAT[x$T_FELIRAT$Text == ID[id],])
         }
     }
-    area.ID <- as.numeric(parcel[,3])
+    parc.tab <- data.frame(DATtable = descript$Ref.tab, parcID = descript$Ref.tab.line)
+### Area identification
+    usedDATtables <- unique(descript$Ref.tab)
+    ## Every table scanned
+    parcel.ID  <- numeric()
+    area.ID  <- numeric()
+    for(DATtable in usedDATtables) {
+        current.parcel.ID <- descript[descript$Ref.tab == DATtable, "Ref.tab.line"]
+        parcel.ID <- c(parcel.ID, current.parcel.ID)
+        ## Correct row number to parcel ID
+        parcel.row.no <- x[[DATtable]][current.parcel.ID, 1]
+        parcel.row.no <- as.numeric(parcel.row.no)
+        current.parcel.ID <- as.numeric(current.parcel.ID)
+        current.parcel.ID <- current.parcel.ID - (parcel.row.no - current.parcel.ID)
+        assign(DATtable, x[[DATtable]][current.parcel.ID, ])
+        area.ID <- c(area.ID, as.numeric(get(DATtable)[ ,3]))
+    }
     ## Border identification
     DATtable.row <- which(x[["T_FELULET"]][, 1] == area.ID[1])
     area <- x[["T_FELULET"]][DATtable.row,]
@@ -51,15 +52,14 @@ DATSelectedExport <- function(x, ID = c(139,140), obj = "BD") {
     points <- x[["T_PONT"]][point.IDs,]
     out.DAT <- list(Head = x$Head,
                     T_PONT = points,
+                    T_VONAL = NULL,
                     T_HATARVONAL = borderlines,
                     T_HATAR = borders,
-                    T_FELULET = area,
-                    tabla = parcel,
-                    T_FELIRAT = descript
+                    T_FELULET = area
                     )
-    out.names <- names(out.DAT)
-    out.names[out.names == "tabla"] <-  DATtable.name
-    names(out.DAT) <- out.names
+    for(DATtable in usedDATtables)
+        out.DAT[[DATtable]] <- get(DATtable)
+    out.DAT$T_FELIRAT  <- descript
     out.DAT
 }
 
