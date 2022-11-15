@@ -15,16 +15,21 @@ curr.list$T_PONT <- round(eovrotate(curr.list$T_PONT, -73), 2)
 names(curr.list$T_FELIRAT) <- c("Nr", "Text", "Pt.id", "Angle", "Font", "Valid", "Ref.tab", "Ref.tab.line", "Type")
 
 CurrTextAngle <- as.numeric(curr.list$T_FELIRAT$Angle)
-CurrTextAngle[CurrTextAngle != 90] <- CurrTextAngle[CurrTextAngle != 90] - 75
+CurrTextAngle[CurrTextAngle != 90] <- CurrTextAngle[CurrTextAngle != 90] - 73
 
 CurrTextAngle[CurrTextAngle < 0] <- CurrTextAngle[CurrTextAngle < 0] + 180
 
-curr.list$T_FELIRAT$Angle <- round(CurrTextAngle, 1)
 curr.list$T_FELIRAT$Angle <- round(CurrTextAngle, 1)
 curr.list$T_FELIRAT$Nr <- as.numeric(curr.list$T_FELIRAT$Nr)
 curr.list$T_FELIRAT$Pt.id <- as.numeric(curr.list$T_FELIRAT$Pt.id)
 curr.list$T_FELIRAT$Ref.tab.line <- as.numeric(curr.list$T_FELIRAT$Ref.tab.line)
 curr.list$T_FELIRAT$Type <- as.numeric(curr.list$T_FELIRAT$Type)
+
+names(curr.list$T_SZIMBOLUM) <- c("Nr", "Key", "Pt.id", "Angle", "Ref.tab", "Ref.tab.line", "Valid")
+CurrTextAngle <- as.numeric(curr.list$T_SZIMBOLUM$Angle)
+CurrTextAngle[CurrTextAngle != 90] <- CurrTextAngle[CurrTextAngle != 90] - 73
+CurrTextAngle[CurrTextAngle < 0] <- CurrTextAngle[CurrTextAngle < 0] + 180
+curr.list$T_SZIMBOLUM$Angle <- round(CurrTextAngle, 1)
 
 
 ## Public area parcel ID in parentheses
