@@ -26,6 +26,44 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
         assign(DATtable, x[[DATtable]][current.parcel.ID, ])
         area.ID <- c(area.ID, as.numeric(get(DATtable)[ ,3]))
     }
+    ## Create empty pointID object
+    point.IDs <- numeric()
+    ## Check CA object group
+    if(nrow(x$T_OBJ_ATTRCA) > 0) {
+        TabCA.lines <- numeric()
+        for(curr.tab in usedDATtables) {
+            curr.column <- ifelse(curr.tab == "T_OBJ_ATTRBC", 5, 6)
+            curr.parcels <- get(curr.tab)[,1]
+            for(id in curr.parcels) {
+                TabCA.lines <- c(TabCA.lines, which(x$T_OBJ_ATTRCA[, curr.column] == id))
+            }
+        }
+    }
+    if(length(TabCA.lines) > 0) {
+        assign("T_OBJ_ATTRCA", x$T_OBJ_ATTRCA[TabCA.lines, ])
+        area.ID <- c(area.ID, as.numeric(T_OBJ_ATTRCA[ ,3]))
+        usedDATtables <- c(usedDATtables, "T_OBJ_ATTRCA")
+        point.IDs <- c(point.IDs, as.numeric(T_OBJ_ATTRCA$V20))
+    }
+    ## Check BE object group
+    TabBE.lines <- numeric()
+    for(id in 1:length(ID))
+        TabBE.lines <- c(TabBE.lines, which(x$T_OBJ_ATTRBE$V5 == ID[id]))
+    if(length(TabBE.lines) > 0) {
+        assign("T_OBJ_ATTRBE", x$T_OBJ_ATTRBE[TabBE.lines, ])
+        area.ID <- c(area.ID, as.numeric(T_OBJ_ATTRBE[ ,3]))
+        usedDATtables <- c(usedDATtables, "T_OBJ_ATTRBE")
+    }
+    ## Check BF object group
+    TabBF.lines <- numeric()
+    for(id in 1:length(ID))
+        TabBF.lines <- c(TabBF.lines, which(x$T_OBJ_ATTRBF$V13 == ID[id]))
+    if(length(TabBF.lines) > 0) {
+        assign("T_OBJ_ATTRBF", x$T_OBJ_ATTRBF[TabBF.lines, ])
+        area.ID <- c(area.ID, as.numeric(T_OBJ_ATTRBF[ ,3]))
+        usedDATtables <- c(usedDATtables, "T_OBJ_ATTRBF")
+    }
+    area.ID <- unique(area.ID)
     ## Border identification
     DATtable.row <- which(x[["T_FELULET"]][, 1] == area.ID[1])
     area <- x[["T_FELULET"]][DATtable.row,]
@@ -49,7 +87,8 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     border.IDs <- borders[, 3]
     borderlines <- x[["T_HATARVONAL"]][border.IDs,]
     ## Point identification
-    point.IDs <- c(borderlines[,3],
+    point.IDs <- c(point.IDs,
+                   borderlines[,3],
                    borderlines[,4])
     point.IDs <- c(point.IDs, descript[,3])
     point.IDs <- unique(point.IDs)
