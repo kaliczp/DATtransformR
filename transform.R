@@ -20,6 +20,11 @@ CurrTextAngle[CurrTextAngle != 90] <- CurrTextAngle[CurrTextAngle != 90] - 75
 CurrTextAngle[CurrTextAngle < 0] <- CurrTextAngle[CurrTextAngle < 0] + 180
 
 curr.list$T_FELIRAT$Angle <- round(CurrTextAngle, 1)
+curr.list$T_FELIRAT$Angle <- round(CurrTextAngle, 1)
+curr.list$T_FELIRAT$Nr <- as.numeric(curr.list$T_FELIRAT$Nr)
+curr.list$T_FELIRAT$Pt.id <- as.numeric(curr.list$T_FELIRAT$Pt.id)
+curr.list$T_FELIRAT$Ref.tab.line <- as.numeric(curr.list$T_FELIRAT$Ref.tab.line)
+curr.list$T_FELIRAT$Type <- as.numeric(curr.list$T_FELIRAT$Type)
 
 
 ## Public area parcel ID in parentheses

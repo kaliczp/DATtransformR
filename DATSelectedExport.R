@@ -6,7 +6,6 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
             descript <- rbind(descript, x$T_FELIRAT[x$T_FELIRAT$Text == ID[id],])
         }
     }
-    parc.tab <- data.frame(DATtable = descript$Ref.tab, parcID = descript$Ref.tab.line)
 ### Area identification
     usedDATtables <- unique(descript$Ref.tab)
     ## Every table scanned
@@ -48,6 +47,7 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     ## Point identification
     point.IDs <- c(borderlines[,3],
                    borderlines[,4])
+    point.IDs <- c(point.IDs, descript[,3])
     point.IDs <- unique(point.IDs)
     points <- x[["T_PONT"]][point.IDs,]
     out.DAT <- list(Head = x$Head,
