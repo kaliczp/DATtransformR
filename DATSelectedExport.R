@@ -1,9 +1,14 @@
 DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     ## Parcel identification based on ID
-    descript <- x$T_FELIRAT[x$T_FELIRAT$Text == ID[1],]
+    descript <- x$T_FELIRAT[x$T_FELIRAT$Text == ID[1] &
+                            x$T_FELIRAT$Type == 11
+                           ,]
     if(length(ID) > 1) {
         for(id in 2:length(ID)) {
-            descript <- rbind(descript, x$T_FELIRAT[x$T_FELIRAT$Text == ID[id],])
+            descript <- rbind(descript, x$T_FELIRAT[x$T_FELIRAT$Text == ID[id] &
+                                                    x$T_FELIRAT$Type == 11,
+                                                    ]
+                              )
         }
     }
 ### Area identification
