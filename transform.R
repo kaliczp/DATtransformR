@@ -1,6 +1,8 @@
+## cp ../original.dat originalutf8.dat
+## recode l2/CR-LF..u8 originalutf8.dat
 DATfiles <- dir(patt = "dat")
 
-curr.list <- DAT_read(DATfiles[2])
+curr.list <- DAT_read(DATfiles[3])
 names(curr.list$T_PONT) <- c("Nr", "x", "y", "H", "errV", "errM")
 
 xshift <- 220000 - max(curr.list$T_PONT$x)
@@ -44,3 +46,8 @@ curr.list$Head <- init <- paste(outfilename, # filename without extension
 
 DAT_write(curr.list, paste0(outfilename, ".dat"))
 ## DAT_modify_table(curr.list, "teszt.dat", "teszt1.dat", table.name = "T_FELIRAT*")
+
+## recode u8..l2/cl teszt.dat
+## patch teszt.dat jav.patch
+## patch teszt.dat betű.patch
+## from Kapos to Kapus
