@@ -63,6 +63,17 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
         area.ID <- c(area.ID, as.numeric(T_OBJ_ATTRBF[ ,3]))
         usedDATtables <- c(usedDATtables, "T_OBJ_ATTRBF")
     }
+    ## Select all descriptive text for all object groups
+    for(DATtable in usedDATtables) {
+        for(id in get(DATtable)[, 1]) {
+            descript <- rbind(descript, x$T_FELIRAT[x$T_FELIRAT$Ref.tab == DATtable &
+                                                    x$T_FELIRAT$Ref.tab.line == id,
+                                                    ]
+                              )
+        }
+    }
+    descript <- unique(descript)
+    ## Geometry selection
     area.ID <- unique(area.ID)
     ## Border identification
     DATtable.row <- which(x[["T_FELULET"]][, 1] == area.ID[1])
@@ -113,6 +124,7 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
 }
 
 
+##selected.list <- DATSelectedExport(curr.list, c("078/1", "078/2"))
 selected.list <- DATSelectedExport(curr.list)
 DAT_write(selected.list, "selecttesz.dat")
 ## recode u8..l2/cl selecttesz.dat
