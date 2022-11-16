@@ -118,6 +118,12 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     point.IDs <- c(point.IDs, descript[,3])
     point.IDs <- unique(point.IDs)
     points <- x[["T_PONT"]][point.IDs,]
+    ## Order geometry tables
+    points <- points[order(points[,1]),]
+    borderlines <- borderlines[order(borderlines[,1]),]
+    borders <- borders[order(borders[,1]),]
+    area <- area[order(area[,1]),]
+    usedDATtables <- usedDATtables[order(usedDATtables)]
     ## Ordinary points attributes
     pointattr.row <- numeric()
     for(p.id in 1:length(point.IDs))
