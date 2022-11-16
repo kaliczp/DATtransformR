@@ -28,6 +28,20 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     }
     ## Create empty pointID object
     point.IDs <- numeric()
+    ## Get all referenced symbols
+    if(nrow(x$T_SZIMBOLUM) > 1) {
+        symbols <- x$T_SZIMBOLUM[1, ]
+        for(DATtable in usedDATtables) {
+            for(id in get(DATtable)[, 1]) {
+                symbols <- rbind(symbols, x$T_SZIMBOLUM[x$T_SZIMBOLUM$Ref.tab == DATtable &
+                                                      x$T_SZIMBOLUM$Ref.tab.line == id,
+                                                      ]
+                                 )
+            }
+        }
+        symbols <- symbols[-1,]
+        point.IDs <- c(point.IDs, as.numeric(symbols$Pt.id))
+    }
     ## Check CA object group
     if(nrow(x$T_OBJ_ATTRCA) > 0) {
         TabCA.lines <- numeric()
@@ -120,6 +134,7 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     for(DATtable in usedDATtables)
         out.DAT[[DATtable]] <- get(DATtable)
     out.DAT$T_FELIRAT  <- descript
+    out.DAT$T_SZIMBOLUM <- symbols
     out.DAT
 }
 
