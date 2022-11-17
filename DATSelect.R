@@ -16,7 +16,9 @@ DATSelect <- function(x, ID = 139, obj = "BD") {
 }
 
 
-DATSelect(curr.list)[,c("x","y")]
+## DATSelectedExport(curr.list)$T_PONT[,c("x","y")]
+selected.list$T_FELIRAT$Text
+DATSelect <- DATSelect(selected.list, 140)
 
 const.shift <- rnorm(2, sd = 0.06)
 
