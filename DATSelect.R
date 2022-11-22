@@ -47,3 +47,6 @@ for(tti in 1:10) {
     ## Zero padding?
     write.table(coo.ok, paste0("Meas", foldrok[tti], ".csv"), quot = FALSE, eol = "\r\n", sep = ",", row.names = FALSE, col.names = FALSE)
 }
+
+selected.list <- DATSelectedExport(curr.list, c(254,253,252,(255),"257/1","257/2",256,"093/4","(204)"))
+DAT_write(selected.list, "Kivag/Nagy.dat")
