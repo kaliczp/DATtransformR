@@ -11,6 +11,9 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
                               )
         }
     }
+    if(nrow(descript == 0) stop(paste("No parcel identified!\n Name(s)",
+                                      paste(ID, collapse = ", "),
+                                      "are correct?"))
 ### Area identification
     usedDATtables <- unique(descript$Ref.tab)
     ## Every table scanned
