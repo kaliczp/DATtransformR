@@ -71,6 +71,24 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
         ## T_OBJ_ATTRCA is removed from NOTusedDATtables
         NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRCA"]
     }
+    ## Check CB object group
+    if(nrow(x$T_OBJ_ATTRCB) > 0) {
+        TabCB.lines <- numeric()
+        building.ID <- T_OBJ_ATTRCA$V1
+        for(id in 1:length(building.ID))
+            TabCB.lines <- c(TabCB.lines, which(x$T_OBJ_ATTRCB$V5 == building.ID[id]))
+    }
+    if(length(TabCB.lines) > 0) {
+        assign("T_OBJ_ATTRCB", x$T_OBJ_ATTRCB[TabCB.lines, ])
+        if(T_OBJ_ATTRCB$V3 == 3) {
+            area.ID <- c(area.ID, as.numeric(T_OBJ_ATTRCB$V4))
+        } else {
+            warning("Not area-type building accessories!")
+        }
+        usedDATtables <- c(usedDATtables, "T_OBJ_ATTRCB")
+        ## T_OBJ_ATTRCB is removed from NOTusedDATtables
+        NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRCB"]
+    }
     ## Check BE object group
     TabBE.lines <- numeric()
     for(id in 1:length(ID))
