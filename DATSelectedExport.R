@@ -148,8 +148,7 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
         ## T_HATAR is removed from NOTusedDATtables
         NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_HATAR"]
     }
-    borders <- borders[!duplicated(borders[, 3]),]
-    border.IDs <- borders[, 3]
+    border.IDs <- unique(borders[, 3])
     borderlines <- x[["T_HATARVONAL"]][border.IDs,]
     ## T_HATARVONAL is removed from NOTusedDATtables
     NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_HATARVONAL"]
