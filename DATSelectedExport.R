@@ -127,27 +127,25 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     area.ID <- unique(area.ID)
     ## Border identification
     DATtable.row <- which(x[["T_FELULET"]][, 1] == area.ID[1])
-    area <- x[["T_FELULET"]][DATtable.row,]
     if(length(area.ID) > 1) {
         for(id in area.ID[-1]) {
-            DATtable.row <- which(x[["T_FELULET"]][, 1] == id)
-            area <- rbind(area, x[["T_FELULET"]][DATtable.row, ])
+            DATtable.row <- c(DATtable.row, which(x[["T_FELULET"]][, 1] == id))
         }
-        ## T_FELULET is removed from NOTusedDATtables
-        NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_FELULET"]
     }
+    area <- x[["T_FELULET"]][DATtable.row,]
+    ## T_FELULET is removed from NOTusedDATtables
+    NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_FELULET"]
     border.ID  <- as.numeric(area[,3])
     ## Borderline identification
     DATtable.row <- which(x[["T_HATAR"]][, 1] == border.ID[1])
-    borders <- x[["T_HATAR"]][DATtable.row,]
     if(length(border.ID) > 1) {
         for(id in 2:length(border.ID)) {
-            DATtable.row <- which(x[["T_HATAR"]][, 1] == border.ID[id])
-            borders <- rbind(borders, x[["T_HATAR"]][DATtable.row,])
+            DATtable.row <- c(DATtable.row, which(x[["T_HATAR"]][, 1] == border.ID[id]))
         }
-        ## T_HATAR is removed from NOTusedDATtables
-        NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_HATAR"]
     }
+    ## T_HATAR is removed from NOTusedDATtables
+    NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_HATAR"]
+    borders <- x[["T_HATAR"]][DATtable.row,]
     border.IDs <- unique(borders[, 3])
     borderlines <- x[["T_HATARVONAL"]][border.IDs,]
     ## T_HATARVONAL is removed from NOTusedDATtables
