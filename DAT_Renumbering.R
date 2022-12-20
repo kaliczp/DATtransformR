@@ -24,6 +24,9 @@ DAT_Renumbering <- function(x) {
         if(any(ptIDszimb))
             x$T_SZIMBOLUM[ptIDszimb, "Pt.id"] <- PONT.df[NrRow, "New"]
     }
+    ## AC points ordering and numbering
+    x$T_OBJ_ATTRAC <- x$T_OBJ_ATTRAC[order(as.numeric(x$T_OBJ_ATTRAC$V4)),]
+    x$T_OBJ_ATTRAC$V1 <- 1:nrow(x$T_OBJ_ATTRAC) 
     ## New HATARVONALid
     HATARVONAL.df <- data.frame(Old = x$T_HATARVONAL$V1, New = 1:nrow(x$T_HATARVONAL))
     ## Replace HATARVONALid
