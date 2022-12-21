@@ -27,6 +27,10 @@ DAT_Renumbering <- function(x) {
     ## AC points ordering and numbering
     x$T_OBJ_ATTRAC <- x$T_OBJ_ATTRAC[order(as.numeric(x$T_OBJ_ATTRAC$V4)),]
     x$T_OBJ_ATTRAC$V1 <- 1:nrow(x$T_OBJ_ATTRAC) 
+    ## SZIMBOLUM points renumbering
+    x$T_SZIMBOLUM$Nr <- 1:nrow(x$T_SZIMBOLUM) 
+    ## FELIRAT points renumbering
+    x$T_FELIRAT$Nr <- 1:nrow(x$T_FELIRAT) 
     ## New HATARVONALid
     HATARVONAL.df <- data.frame(Old = x$T_HATARVONAL$V1, New = 1:nrow(x$T_HATARVONAL))
     ## Replace HATARVONALid
