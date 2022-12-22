@@ -41,5 +41,13 @@ DAT_Renumbering <- function(x) {
         if(any(htvId))
             x$T_HATAR[htvId, "V3"]  <- HATARVONAL.df[NrRow, "New"]
     }
+    ## New HATARid
+    OldHATAR <- unique(x$T_HATAR$V1)
+    HATAR.df <- data.frame(Old = OldHATAR, New = 1:length(OldHATAR))
+    ## Replace HATARid and HATARid in FELULET
+    for(NrRow in 1:nrow(HATAR.df)) {
+        x$T_HATAR[x$T_HATAR$V1 == HATAR.df[NrRow, "Old"], "V1"] <- HATAR.df[NrRow, "New"]
+        x$T_FELULET[x$T_FELULET$V3 == HATAR.df[NrRow, "Old"], "V3"]  <- HATAR.df[NrRow, "New"]
+    }
     x
 }
