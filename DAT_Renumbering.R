@@ -49,5 +49,13 @@ DAT_Renumbering <- function(x) {
         x$T_HATAR[x$T_HATAR$V1 == HATAR.df[NrRow, "Old"], "V1"] <- HATAR.df[NrRow, "New"]
         x$T_FELULET[x$T_FELULET$V3 == HATAR.df[NrRow, "Old"], "V3"]  <- HATAR.df[NrRow, "New"]
     }
+    FELULET.df <- data.frame(Old = x$T_FELULET$V1, New = 1:nrow(x$T_FELULET))
+    ## Replace FELULETid and FELULETid in OBJ_ATTR
+    for(NrRow in 1:nrow(FELULET.df)) {
+        x$T_FELULET[x$T_FELULET$V1 == FELULET.df[NrRow, "Old"], "V1"] <- FELULET.df[NrRow, "New"]
+        x$T_OBJ_ATTRBD[x$T_OBJ_ATTRBD$V3 == FELULET.df[NrRow, "Old"], "V3"]  <- FELULET.df[NrRow, "New"]
+        x$T_OBJ_ATTRBF[x$T_OBJ_ATTRBF$V3 == FELULET.df[NrRow, "Old"], "V3"]  <- FELULET.df[NrRow, "New"]
+        x$T_OBJ_ATTRCA[x$T_OBJ_ATTRCA$V3 == FELULET.df[NrRow, "Old"], "V3"]  <- FELULET.df[NrRow, "New"]
+    }
     x
 }
