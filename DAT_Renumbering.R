@@ -1,4 +1,5 @@
 DAT_Renumbering <- function(x) {
+    DATtable.names <- names(x)
     ## New PONTid
     PONT.df <- data.frame(Old = x$T_PONT$Nr, New = 1:length(x$T_PONT$Nr))
     ## Replace PONTid
@@ -20,15 +21,18 @@ DAT_Renumbering <- function(x) {
         if(any(ptIDfelir))
             x$T_FELIRAT[ptIDfelir, "Pt.id"] <- PONT.df[NrRow, "New"]
         ## T_SZIMBOLUM
-        ptIDszimb <- x$T_SZIMBOLUM$Pt.id == PONT.df[NrRow, "Old"]
-        if(any(ptIDszimb))
-            x$T_SZIMBOLUM[ptIDszimb, "Pt.id"] <- PONT.df[NrRow, "New"]
+        if(any(DATtable.names == "T_SZIMBOLUM")) {
+            ptIDszimb <- x$T_SZIMBOLUM$Pt.id == PONT.df[NrRow, "Old"]
+            if(any(ptIDszimb))
+                x$T_SZIMBOLUM[ptIDszimb, "Pt.id"] <- PONT.df[NrRow, "New"]
+        }
     }
     ## AC points ordering and numbering
     x$T_OBJ_ATTRAC <- x$T_OBJ_ATTRAC[order(as.numeric(x$T_OBJ_ATTRAC$V4)),]
     x$T_OBJ_ATTRAC$V1 <- 1:nrow(x$T_OBJ_ATTRAC) 
     ## SZIMBOLUM points renumbering
-    x$T_SZIMBOLUM$Nr <- 1:nrow(x$T_SZIMBOLUM) 
+    if(any(DATtable.names == "T_SZIMBOLUM"))
+        x$T_SZIMBOLUM$Nr <- 1:nrow(x$T_SZIMBOLUM)
     ## FELIRAT points renumbering
     x$T_FELIRAT$Nr <- 1:nrow(x$T_FELIRAT) 
     ## New HATARVONALid
