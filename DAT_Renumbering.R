@@ -57,5 +57,28 @@ DAT_Renumbering <- function(x) {
         x$T_OBJ_ATTRBF[x$T_OBJ_ATTRBF$V3 == FELULET.df[NrRow, "Old"], "V3"]  <- FELULET.df[NrRow, "New"]
         x$T_OBJ_ATTRCA[x$T_OBJ_ATTRCA$V3 == FELULET.df[NrRow, "Old"], "V3"]  <- FELULET.df[NrRow, "New"]
     }
+    ### Renumber all OBJs
+    ## Identify tables
+    obj.names <- grep("OBJ", names(selected.list), value = TRUE)
+    ## Remove already renumbered AC
+    obj.names <- obj.names[-grep("AC", obj.names)]
+    ## Edit given OBJs
+    for(aktobj in obj.names) {
+        old.objid <- x[[aktobj]][ ,1]
+        new.objid <- 1:length(old.objid)
+        ## Replace number with new
+        x[[aktobj]][ ,1]  <-  new.objid
+        ## Quick-and-dirty replacement in referring tables
+        if(any(x$T_FELIRAT$Ref.tab == aktobj)) {
+            for(akt.line in 1:length(old.objid)) {
+                x$T_FELIRAT[x$T_FELIRAT$Ref.tab.line == old.objid, "Ref.tab.line"]  <- new.objid
+            }
+        }
+        if(any(x$T_SZIMBOLUM$Ref.tab == aktobj)) {
+            for(akt.line in 1:length(old.objid)) {
+                x$T_SZIMBOLUM[x$T_SZIMBOLUM$Ref.tab.line == old.objid, "Ref.tab.line"]  <- new.objid
+            }
+        }
+    }
     x
 }
