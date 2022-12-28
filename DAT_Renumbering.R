@@ -59,7 +59,7 @@ DAT_Renumbering <- function(x) {
     }
     ### Renumber all OBJs
     ## Identify tables
-    obj.names <- grep("OBJ", names(selected.list), value = TRUE)
+    obj.names <- grep("OBJ", names(x), value = TRUE)
     ## Remove already renumbered AC
     obj.names <- obj.names[-grep("AC", obj.names)]
     ## Edit given OBJs
