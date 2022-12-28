@@ -48,9 +48,11 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
             }
         }
         symbols <- symbols[-1,]
-        point.IDs <- c(point.IDs, as.numeric(symbols$Pt.id))
-        ## T_SZIMBOLUM is removed from NOTusedDATtables
-        NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_SZIMBOLUM"]
+        if(nrow(symbols) > 0) {
+            point.IDs <- c(point.IDs, as.numeric(symbols$Pt.id))
+            ## T_SZIMBOLUM is removed from NOTusedDATtables
+            NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_SZIMBOLUM"]
+        }
     }
     ## Check CA object group
     if(nrow(x$T_OBJ_ATTRCA) > 0) {
@@ -190,7 +192,9 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     for(DATtable in usedDATtables)
         out.DAT[[DATtable]] <- get(DATtable)
     out.DAT$T_FELIRAT  <- descript
-    out.DAT$T_SZIMBOLUM <- symbols
+    if(nrow(symbols) > 0) {
+        out.DAT$T_SZIMBOLUM <- symbols
+    }
     out.DAT
 }
 
