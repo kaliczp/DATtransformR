@@ -23,6 +23,8 @@ DAT_read <- function(file) {
         }
         ## Substract table
         raw.table <- source.data[table.head: table.tail]
+        ## Remove space after last asterix
+        raw.table <- sub(" $","", raw.table)
         ## Split information at * separator
         raw.table.atomic <- unlist(strsplit(raw.table, "\\*"))
         ## Numeric table is converted from character in one step if flag activated
