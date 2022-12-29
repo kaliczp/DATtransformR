@@ -57,9 +57,13 @@ DAT_Renumbering <- function(x) {
     ## Replace FELULETid and FELULETid in OBJ_ATTR
     for(NrRow in 1:nrow(FELULET.df)) {
         x$T_FELULET[x$T_FELULET$V1 == FELULET.df[NrRow, "Old"], "V1"] <- FELULET.df[NrRow, "New"]
-        x$T_OBJ_ATTRBD[x$T_OBJ_ATTRBD$V3 == FELULET.df[NrRow, "Old"], "V3"]  <- FELULET.df[NrRow, "New"]
+        if(any(DATtable.names == "T_OBJ_ATTRBC"))
+            x$T_OBJ_ATTRBC[x$T_OBJ_ATTRBC$V3 == FELULET.df[NrRow, "Old"], "V3"]  <- FELULET.df[NrRow, "New"]
+        if(any(DATtable.names == "T_OBJ_ATTRBD"))
+            x$T_OBJ_ATTRBD[x$T_OBJ_ATTRBD$V3 == FELULET.df[NrRow, "Old"], "V3"]  <- FELULET.df[NrRow, "New"]
         x$T_OBJ_ATTRBF[x$T_OBJ_ATTRBF$V3 == FELULET.df[NrRow, "Old"], "V3"]  <- FELULET.df[NrRow, "New"]
-        x$T_OBJ_ATTRCA[x$T_OBJ_ATTRCA$V3 == FELULET.df[NrRow, "Old"], "V3"]  <- FELULET.df[NrRow, "New"]
+        if(any(DATtable.names == "T_OBJ_ATTRCA"))
+            x$T_OBJ_ATTRCA[x$T_OBJ_ATTRCA$V3 == FELULET.df[NrRow, "Old"], "V3"]  <- FELULET.df[NrRow, "New"]
     }
     ### Renumber all OBJs
     ## Identify tables
