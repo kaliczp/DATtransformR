@@ -14,6 +14,8 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     if(nrow(descript) == 0) stop(paste("No parcel identified!\n Name(s)",
                                       paste(ID, collapse = ", "),
                                       "are correct?"))
+    ## Remove parentheses of public parcels
+    ID <- sub("\\)","",sub("\\(","",ID))
 ### All tables except header listed
     NOTusedDATtables <- names(x)
     NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "Head"]
