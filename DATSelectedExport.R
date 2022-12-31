@@ -1,4 +1,6 @@
 DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
+    if(!is.list(x))
+        stop("x argument is not a list")
     ## Parcel identification based on ID
     descript <- x$T_FELIRAT[x$T_FELIRAT$Text == ID[1] &
                             x$T_FELIRAT$Type == 11
