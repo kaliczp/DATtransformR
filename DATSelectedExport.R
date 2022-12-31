@@ -150,6 +150,36 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
             DATtable.row <- c(DATtable.row, which(x[["T_HATAR"]][, 1] == border.ID[id]))
         }
     }
+    ## Check AD address coordinate objects
+    if(nrow(x$T_OBJ_ATTRAD) > 0) {
+        TabAD.lines  <- numeric()
+        ## Select possible tables
+        possibletab <- c("BC", "BD", "CA", "BG")
+        for(currtabnum in 1:length(possibletab)) {
+            currADtabcol <- 8 + currtabnum
+            currtabname <- paste0("T_OBJ_ATTR", possibletab[currtabnum])
+            if(any(usedDATtables == currtabname)){
+                x$T_OBJ_ATTRAD[, currADtabcol] <- as.numeric(x$T_OBJ_ATTRAD[, currADtabcol])
+                if(any(!is.na(x$T_OBJ_ATTRAD[, currADtabcol]))){
+                    ## Select lines
+                    curr.parcels <- get(currtabname)[,1]
+                    for(id in curr.parcels) {
+                        currADid <- which(x$T_OBJ_ATTRAD[, currADtabcol] == id)
+                        TabAD.lines <- c(TabAD.lines, currADid)
+                    }
+                }
+            }
+        }
+    }
+    if(length(TabAD.lines) > 0) {
+        assign("T_OBJ_ATTRAD", x$T_OBJ_ATTRAD[TabAD.lines, ])
+        ## AD table added
+        usedDATtables <- c(usedDATtables, "T_OBJ_ATTRAD")
+        ## AD points selected
+        point.IDs <- c(point.IDs, as.numeric(T_OBJ_ATTRAD$V5))
+        ## T_OBJ_ATTRAD is removed from NOTusedDATtables
+        NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRAD"]
+    }
     ## T_HATAR is removed from NOTusedDATtables
     NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_HATAR"]
     borders <- x[["T_HATAR"]][DATtable.row,]
