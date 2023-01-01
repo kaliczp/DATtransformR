@@ -42,24 +42,6 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     point.IDs <- numeric()
     ## Create empty line.IDs object
     line.IDs <- numeric()
-    ## Get all referenced symbols
-    if(nrow(x$T_SZIMBOLUM) > 1) {
-        symbols <- x$T_SZIMBOLUM[1, ]
-        for(DATtable in usedDATtables) {
-            for(id in get(DATtable)[, 1]) {
-                symbols <- rbind(symbols, x$T_SZIMBOLUM[x$T_SZIMBOLUM$Ref.tab == DATtable &
-                                                      x$T_SZIMBOLUM$Ref.tab.line == id,
-                                                      ]
-                                 )
-            }
-        }
-        symbols <- symbols[-1,]
-        if(nrow(symbols) > 0) {
-            point.IDs <- c(point.IDs, as.numeric(symbols$Pt.id))
-            ## T_SZIMBOLUM is removed from NOTusedDATtables
-            NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_SZIMBOLUM"]
-        }
-    }
     ## Check CA object group
     if(nrow(x$T_OBJ_ATTRCA) > 0) {
         TabCA.lines <- numeric()
@@ -98,6 +80,24 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
             usedDATtables <- c(usedDATtables, "T_OBJ_ATTRCB")
             ## T_OBJ_ATTRCB is removed from NOTusedDATtables
             NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRCB"]
+        }
+    }
+    ## Get all referenced symbols
+    if(nrow(x$T_SZIMBOLUM) > 1) {
+        symbols <- x$T_SZIMBOLUM[1, ]
+        for(DATtable in usedDATtables) {
+            for(id in get(DATtable)[, 1]) {
+                symbols <- rbind(symbols, x$T_SZIMBOLUM[x$T_SZIMBOLUM$Ref.tab == DATtable &
+                                                      x$T_SZIMBOLUM$Ref.tab.line == id,
+                                                      ]
+                                 )
+            }
+        }
+        symbols <- symbols[-1,]
+        if(nrow(symbols) > 0) {
+            point.IDs <- c(point.IDs, as.numeric(symbols$Pt.id))
+            ## T_SZIMBOLUM is removed from NOTusedDATtables
+            NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_SZIMBOLUM"]
         }
     }
     ## Check BE object group
