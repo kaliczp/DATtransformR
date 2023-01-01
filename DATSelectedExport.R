@@ -40,6 +40,8 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     }
     ## Create empty pointID object
     point.IDs <- numeric()
+    ## Create empty line.IDs object
+    line.IDs <- numeric()
     ## Get all referenced symbols
     if(nrow(x$T_SZIMBOLUM) > 1) {
         symbols <- x$T_SZIMBOLUM[1, ]
@@ -216,13 +218,14 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
                                                  )
                                            )
     out.DAT <- list(Head = x$Head,
-                    T_PONT = points,
-                    T_VONAL = NULL,
-                    T_HATARVONAL = borderlines,
-                    T_HATAR = borders,
-                    T_FELULET = area,
-                    T_OBJ_ATTRAC = T_OBJ_ATTRAC
-                    )
+                    T_PONT = points)
+    if(length(line.IDs) > 0) {
+        out.DAT$T_VONAL <- lines
+    }
+    out.DAT$T_HATARVONAL <- borderlines
+    out.DAT$T_HATAR <- borders
+    out.DAT$T_FELULET <- area
+    out.DAT$T_OBJ_ATTRAC  <-  T_OBJ_ATTRAC
     for(DATtable in usedDATtables)
         out.DAT[[DATtable]] <- get(DATtable)
     out.DAT$T_FELIRAT  <- descript
