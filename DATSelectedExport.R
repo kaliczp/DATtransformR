@@ -131,6 +131,24 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
         ## T_OBJ_ATTRBF is removed from NOTusedDATtables
         NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRBF"]
     }
+    ## Check BG object group based on ID of enclosing parcels
+    if(nrow(x$T_OBJ_ATTRBG) > 0) {
+        TabBG.lines <- numeric()
+        for(id in 1:length(ID))
+            TabBG.lines <- c(TabBG.lines, which(x$T_OBJ_ATTRBG$V5 == ID[id]))
+        if(length(TabBG.lines) > 0) {
+            assign("T_OBJ_ATTRBG", x$T_OBJ_ATTRBG[TabBG.lines, ])
+            area.ID <- c(area.ID, as.numeric(T_OBJ_ATTRBG[ ,3]))
+            ## Are there any referring points
+            T_OBJ_ATTRBG[, 28] <- as.numeric(T_OBJ_ATTRBG[, 28])
+            if(any(!is.na(T_OBJ_ATTRBG[, 28])))
+                ## If any georef point is added
+                point.IDs <- c(point.IDs, T_OBJ_ATTRBG[!is.na(T_OBJ_ATTRBG[, 28]), 28])
+            usedDATtables <- c(usedDATtables, "T_OBJ_ATTRBG")
+        }
+        ## T_OBJ_ATTRBF is removed from NOTusedDATtables
+        NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRBG"]
+    }
 ### AD objects
     ## Check AD address coordinate objects
     if(nrow(x$T_OBJ_ATTRAD) > 0) {
