@@ -1,10 +1,13 @@
 DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
+### Check input database
     if(!is.list(x))
         stop("x argument is not a list")
-    ## Parcel identification based on ID
+### T_FELIRAT checked for parcel names 
+    ## Parcel identification based on first ID
     descript <- x$T_FELIRAT[x$T_FELIRAT$Text == ID[1] &
                             x$T_FELIRAT$Type == 11
                            ,]
+    ## In case of multiple ID
     if(length(ID) > 1) {
         for(id in 2:length(ID)) {
             descript <- rbind(descript, x$T_FELIRAT[x$T_FELIRAT$Text == ID[id] &
@@ -13,6 +16,7 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
                               )
         }
     }
+    ## If no rows selected stop!
     if(nrow(descript) == 0) stop(paste("No parcel identified!\n Name(s)",
                                       paste(ID, collapse = ", "),
                                       "are correct?"))
@@ -21,11 +25,17 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
 ### All tables except header listed
     NOTusedDATtables <- names(x)
     NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "Head"]
-### Area identification
-    usedDATtables <- unique(descript$Ref.tab)
-    ## Every table scanned
+### Empty geometry and parcel id vectors created for collection
+    ## Create empty pointID object
+    point.IDs <- numeric()
+    ## Create empty line.IDs object
+    line.IDs <- numeric()
+    ## Create empty vector for parcel collection
     parcel.ID  <- numeric()
+    ## Finally create empty area.ID for areas
     area.ID  <- numeric()
+### T_FELIRAT referenced attribute tables (typically BC and BD) identification
+    usedDATtables <- unique(descript$Ref.tab)
     for(DATtable in usedDATtables) {
         current.parcel.ID <- descript[descript$Ref.tab == DATtable, "Ref.tab.line"]
         parcel.ID <- c(parcel.ID, current.parcel.ID)
@@ -38,11 +48,8 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
         ## Processed table removed
         NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == DATtable]
     }
-    ## Create empty pointID object
-    point.IDs <- numeric()
-    ## Create empty line.IDs object
-    line.IDs <- numeric()
-    ## Check CA object group
+### C objects class
+    ## Check CA object group based on selected parcels public and owned (BC and BD)
     if(nrow(x$T_OBJ_ATTRCA) > 0) {
         TabCA.lines <- numeric()
         for(curr.tab in usedDATtables) {
@@ -82,6 +89,7 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
             NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRCB"]
         }
     }
+### T_SZIMBOLUM talbe check (BC BD CA CB mentioned in this table)
     ## Get all referenced symbols
     if(nrow(x$T_SZIMBOLUM) > 1) {
         symbols <- x$T_SZIMBOLUM[1, ]
@@ -100,6 +108,7 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
             NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_SZIMBOLUM"]
         }
     }
+### Check other B class (BC BD already checked) based on parcel ID-s
     ## Check BE object group
     TabBE.lines <- numeric()
     for(id in 1:length(ID))
@@ -122,46 +131,18 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
         ## T_OBJ_ATTRBF is removed from NOTusedDATtables
         NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRBF"]
     }
-    ## Select all descriptive text for all object groups
-    for(DATtable in usedDATtables) {
-        for(id in get(DATtable)[, 1]) {
-            descript <- rbind(descript, x$T_FELIRAT[x$T_FELIRAT$Ref.tab == DATtable &
-                                                    x$T_FELIRAT$Ref.tab.line == id,
-                                                    ]
-                              )
-        }
-    }
-    descript <- unique(descript)
-    ## T_FELIRAT is removed from NOTusedDATtables
-    NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_FELIRAT"]
-    ## Geometry selection
-    area.ID <- unique(area.ID)
-    ## Border identification
-    DATtable.row <- which(x[["T_FELULET"]][, 1] == area.ID[1])
-    if(length(area.ID) > 1) {
-        for(id in area.ID[-1]) {
-            DATtable.row <- c(DATtable.row, which(x[["T_FELULET"]][, 1] == id))
-        }
-    }
-    area <- x[["T_FELULET"]][DATtable.row,]
-    ## T_FELULET is removed from NOTusedDATtables
-    NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_FELULET"]
-    border.ID  <- as.numeric(area[,3])
-    ## Borderline identification
-    DATtable.row <- which(x[["T_HATAR"]][, 1] == border.ID[1])
-    if(length(border.ID) > 1) {
-        for(id in 2:length(border.ID)) {
-            DATtable.row <- c(DATtable.row, which(x[["T_HATAR"]][, 1] == border.ID[id]))
-        }
-    }
+### AD objects
     ## Check AD address coordinate objects
     if(nrow(x$T_OBJ_ATTRAD) > 0) {
         TabAD.lines  <- numeric()
         ## Select possible tables
         possibletab <- c("BC", "BD", "CA", "BG")
         for(currtabnum in 1:length(possibletab)) {
+            ## Convert tabnum to column in AD table
             currADtabcol <- 8 + currtabnum
+            ## Generate attr. table name
             currtabname <- paste0("T_OBJ_ATTR", possibletab[currtabnum])
+            ## Extract all address coordinates to all selected objects
             if(any(usedDATtables == currtabname)){
                 x$T_OBJ_ATTRAD[, currADtabcol] <- as.numeric(x$T_OBJ_ATTRAD[, currADtabcol])
                 if(any(!is.na(x$T_OBJ_ATTRAD[, currADtabcol]))){
@@ -184,6 +165,40 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
         ## T_OBJ_ATTRAD is removed from NOTusedDATtables
         NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRAD"]
     }
+### T_FELIRAT table completion
+    ## Select all descriptive text for all object groups
+    for(DATtable in usedDATtables) {
+        for(id in get(DATtable)[, 1]) {
+            descript <- rbind(descript, x$T_FELIRAT[x$T_FELIRAT$Ref.tab == DATtable &
+                                                    x$T_FELIRAT$Ref.tab.line == id,
+                                                    ]
+                              )
+        }
+    }
+    descript <- unique(descript)
+    ## T_FELIRAT is removed from NOTusedDATtables
+    NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_FELIRAT"]
+### Geometry completion 1 until T_HATARVONAL
+    ## Area check for uniqueness
+    area.ID <- unique(area.ID)
+    ## Border identification
+    DATtable.row <- which(x[["T_FELULET"]][, 1] == area.ID[1])
+    if(length(area.ID) > 1) {
+        for(id in area.ID[-1]) {
+            DATtable.row <- c(DATtable.row, which(x[["T_FELULET"]][, 1] == id))
+        }
+    }
+    area <- x[["T_FELULET"]][DATtable.row,]
+    ## T_FELULET is removed from NOTusedDATtables
+    NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_FELULET"]
+    border.ID  <- as.numeric(area[,3])
+    ## Borderline identification
+    DATtable.row <- which(x[["T_HATAR"]][, 1] == border.ID[1])
+    if(length(border.ID) > 1) {
+        for(id in 2:length(border.ID)) {
+            DATtable.row <- c(DATtable.row, which(x[["T_HATAR"]][, 1] == border.ID[id]))
+        }
+    }
     ## T_HATAR is removed from NOTusedDATtables
     NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_HATAR"]
     borders <- x[["T_HATAR"]][DATtable.row,]
@@ -191,6 +206,7 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     borderlines <- x[["T_HATARVONAL"]][border.IDs,]
     ## T_HATARVONAL is removed from NOTusedDATtables
     NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_HATARVONAL"]
+### Geometry completion 2 with points
     ## Point identification
     point.IDs <- c(point.IDs,
                    borderlines[,3],
@@ -200,12 +216,8 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     points <- x[["T_PONT"]][point.IDs,]
     ## T_PONT is removed from NOTusedDATtables
     NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_PONT"]
-    ## Order geometry tables
-    points <- points[order(points[,1]),]
-    borderlines <- borderlines[order(borderlines[,1]),]
-    borders <- borders[order(borders[,1]),]
-    area <- area[order(area[,1]),]
-    usedDATtables <- usedDATtables[order(usedDATtables)]
+### A objects class
+### AC tables collection
     ## Ordinary points attributes
     pointattr.row <- numeric()
     for(p.id in 1:length(point.IDs))
@@ -216,7 +228,15 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     if(length(NOTusedDATtables) > 0) warning(paste("Tables are not checked!",
                                                  paste(NOTusedDATtables, collapse = ", ")
                                                  )
-                                           )
+                                             )
+### Final geomtery completion
+    ## Order geometry tables
+    points <- points[order(points[,1]),]
+    borderlines <- borderlines[order(borderlines[,1]),]
+    borders <- borders[order(borders[,1]),]
+    area <- area[order(area[,1]),]
+### Output completion
+    ## Collect extracted geometries
     out.DAT <- list(Head = x$Head,
                     T_PONT = points)
     if(length(line.IDs) > 0) {
@@ -225,9 +245,14 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     out.DAT$T_HATARVONAL <- borderlines
     out.DAT$T_HATAR <- borders
     out.DAT$T_FELULET <- area
+    ## Collect attribute tables
+    ## Output point attributes
     out.DAT$T_OBJ_ATTRAC  <-  T_OBJ_ATTRAC
+    ## Order and collect other used tables
+    usedDATtables <- usedDATtables[order(usedDATtables)]
     for(DATtable in usedDATtables)
         out.DAT[[DATtable]] <- get(DATtable)
+    ## T_FELIRAT and optional T_SZIMBOLUM tables completion
     out.DAT$T_FELIRAT  <- descript
     if(nrow(symbols) > 0) {
         out.DAT$T_SZIMBOLUM <- symbols
