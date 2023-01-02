@@ -49,8 +49,8 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
         NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == DATtable]
     }
 ### C objects class
-    ## Check CA object group based on selected parcels public and owned (BC and BD)
-    if(nrow(x$T_OBJ_ATTRCA) > 0) {
+    ## Check CA and if some examples are exits then CB object groups based on selected parcels public and owned (BC and BD)
+    if(exists("T_OBJ_ATTRCA", where = x)) {
         TabCA.lines <- numeric()
         for(curr.tab in usedDATtables) {
             curr.column <- ifelse(curr.tab == "T_OBJ_ATTRBC", 5, 6)
@@ -59,39 +59,37 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
                 TabCA.lines <- c(TabCA.lines, which(x$T_OBJ_ATTRCA[, curr.column] == id))
             }
         }
-    }
-    if(length(TabCA.lines) > 0) {
-        assign("T_OBJ_ATTRCA", x$T_OBJ_ATTRCA[TabCA.lines, ])
-        area.ID <- c(area.ID, as.numeric(T_OBJ_ATTRCA[ ,3]))
-        usedDATtables <- c(usedDATtables, "T_OBJ_ATTRCA")
-        point.IDs <- c(point.IDs, as.numeric(T_OBJ_ATTRCA$V20))
+        if(length(TabCA.lines) > 0) {
+            assign("T_OBJ_ATTRCA", x$T_OBJ_ATTRCA[TabCA.lines, ])
+            area.ID <- c(area.ID, as.numeric(T_OBJ_ATTRCA[ ,3]))
+            usedDATtables <- c(usedDATtables, "T_OBJ_ATTRCA")
+            point.IDs <- c(point.IDs, as.numeric(T_OBJ_ATTRCA$V20))
+            ## If there are CA objects then check CB
+            ## Check CB object group
+            if(exists("T_OBJ_ATTRCB", where = x)) {
+                TabCB.lines <- numeric()
+                building.ID <- T_OBJ_ATTRCA$V1
+                for(id in 1:length(building.ID))
+                    TabCB.lines <- c(TabCB.lines, which(x$T_OBJ_ATTRCB$V5 == building.ID[id]))
+                if(length(TabCB.lines) > 0) {
+                    assign("T_OBJ_ATTRCB", x$T_OBJ_ATTRCB[TabCB.lines, ])
+                    if(T_OBJ_ATTRCB$V3 == 3) {
+                        area.ID <- c(area.ID, as.numeric(T_OBJ_ATTRCB$V4))
+                    } else {
+                        warning("Not area-type building accessories!")
+                    }
+                    usedDATtables <- c(usedDATtables, "T_OBJ_ATTRCB")
+                }
+                ## T_OBJ_ATTRCB is removed from NOTusedDATtables
+                NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRCB"]
+            }
+        }
         ## T_OBJ_ATTRCA is removed from NOTusedDATtables
         NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRCA"]
     }
-    ## If there are CA objects check CB
-    if(length(TabCA.lines) > 0) {
-        ## Check CB object group
-        if(nrow(x$T_OBJ_ATTRCB) > 0) {
-            TabCB.lines <- numeric()
-            building.ID <- T_OBJ_ATTRCA$V1
-            for(id in 1:length(building.ID))
-                TabCB.lines <- c(TabCB.lines, which(x$T_OBJ_ATTRCB$V5 == building.ID[id]))
-        }
-        if(length(TabCB.lines) > 0) {
-            assign("T_OBJ_ATTRCB", x$T_OBJ_ATTRCB[TabCB.lines, ])
-            if(T_OBJ_ATTRCB$V3 == 3) {
-                area.ID <- c(area.ID, as.numeric(T_OBJ_ATTRCB$V4))
-            } else {
-                warning("Not area-type building accessories!")
-            }
-            usedDATtables <- c(usedDATtables, "T_OBJ_ATTRCB")
-            ## T_OBJ_ATTRCB is removed from NOTusedDATtables
-            NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRCB"]
-        }
-    }
 ### T_SZIMBOLUM talbe check (BC BD CA CB mentioned in this table)
     ## Get all referenced symbols
-    if(nrow(x$T_SZIMBOLUM) > 1) {
+    if(exists("T_SZIMBOLUM", where = x)) {
         symbols <- x$T_SZIMBOLUM[1, ]
         for(DATtable in usedDATtables) {
             for(id in get(DATtable)[, 1]) {
@@ -104,35 +102,39 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
         symbols <- symbols[-1,]
         if(nrow(symbols) > 0) {
             point.IDs <- c(point.IDs, as.numeric(symbols$Pt.id))
-            ## T_SZIMBOLUM is removed from NOTusedDATtables
-            NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_SZIMBOLUM"]
         }
+        ## T_SZIMBOLUM is removed from NOTusedDATtables
+        NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_SZIMBOLUM"]
     }
 ### Check other B class (BC BD already checked) based on parcel ID-s
     ## Check BE object group
-    TabBE.lines <- numeric()
-    for(id in 1:length(ID))
-        TabBE.lines <- c(TabBE.lines, which(x$T_OBJ_ATTRBE$V5 == ID[id]))
-    if(length(TabBE.lines) > 0) {
-        assign("T_OBJ_ATTRBE", x$T_OBJ_ATTRBE[TabBE.lines, ])
-        area.ID <- c(area.ID, as.numeric(T_OBJ_ATTRBE[ ,3]))
-        usedDATtables <- c(usedDATtables, "T_OBJ_ATTRBE")
+    if(exists("T_OBJ_ATTRBE", where = x)) {
+        TabBE.lines <- numeric()
+        for(id in 1:length(ID))
+            TabBE.lines <- c(TabBE.lines, which(x$T_OBJ_ATTRBE$V5 == ID[id]))
+        if(length(TabBE.lines) > 0) {
+            assign("T_OBJ_ATTRBE", x$T_OBJ_ATTRBE[TabBE.lines, ])
+            area.ID <- c(area.ID, as.numeric(T_OBJ_ATTRBE[ ,3]))
+            usedDATtables <- c(usedDATtables, "T_OBJ_ATTRBE")
+        }
         ## T_OBJ_ATTRBE is removed from NOTusedDATtables
         NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRBE"]
     }
     ## Check BF object group
-    TabBF.lines <- numeric()
-    for(id in 1:length(ID))
-        TabBF.lines <- c(TabBF.lines, which(x$T_OBJ_ATTRBF$V13 == ID[id]))
-    if(length(TabBF.lines) > 0) {
-        assign("T_OBJ_ATTRBF", x$T_OBJ_ATTRBF[TabBF.lines, ])
-        area.ID <- c(area.ID, as.numeric(T_OBJ_ATTRBF[ ,3]))
-        usedDATtables <- c(usedDATtables, "T_OBJ_ATTRBF")
+    if(exists("T_OBJ_ATTRBF", where = x)) {
+        TabBF.lines <- numeric()
+        for(id in 1:length(ID))
+            TabBF.lines <- c(TabBF.lines, which(x$T_OBJ_ATTRBF$V13 == ID[id]))
+        if(length(TabBF.lines) > 0) {
+            assign("T_OBJ_ATTRBF", x$T_OBJ_ATTRBF[TabBF.lines, ])
+            area.ID <- c(area.ID, as.numeric(T_OBJ_ATTRBF[ ,3]))
+            usedDATtables <- c(usedDATtables, "T_OBJ_ATTRBF")
+        }
         ## T_OBJ_ATTRBF is removed from NOTusedDATtables
         NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRBF"]
     }
     ## Check BG object group based on ID of enclosing parcels
-    if(nrow(x$T_OBJ_ATTRBG) > 0) {
+    if(exists("T_OBJ_ATTRBG", where = x)) {
         TabBG.lines <- numeric()
         for(id in 1:length(ID))
             TabBG.lines <- c(TabBG.lines, which(x$T_OBJ_ATTRBG$V5 == ID[id]))
@@ -151,7 +153,7 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     }
 ### AD objects
     ## Check AD address coordinate objects
-    if(nrow(x$T_OBJ_ATTRAD) > 0) {
+    if(exists("T_OBJ_ATTRAD", where = x)) {
         TabAD.lines  <- numeric()
         ## Select possible tables
         possibletab <- c("BC", "BD", "CA", "BG")
@@ -173,13 +175,13 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
                 }
             }
         }
-    }
-    if(length(TabAD.lines) > 0) {
-        assign("T_OBJ_ATTRAD", x$T_OBJ_ATTRAD[TabAD.lines, ])
-        ## AD table added
-        usedDATtables <- c(usedDATtables, "T_OBJ_ATTRAD")
-        ## AD points selected
-        point.IDs <- c(point.IDs, as.numeric(T_OBJ_ATTRAD$V5))
+        if(length(TabAD.lines) > 0) {
+            assign("T_OBJ_ATTRAD", x$T_OBJ_ATTRAD[TabAD.lines, ])
+            ## AD table added
+            usedDATtables <- c(usedDATtables, "T_OBJ_ATTRAD")
+            ## AD points selected
+            point.IDs <- c(point.IDs, as.numeric(T_OBJ_ATTRAD$V5))
+        }
         ## T_OBJ_ATTRAD is removed from NOTusedDATtables
         NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRAD"]
     }
