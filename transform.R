@@ -3,6 +3,7 @@
 DATfiles <- dir(patt = "dat")
 
 curr.list <- DAT_read(DATfiles[3])
+curr.list <- DAT_preproc(curr.list)
 
 xshift <- 220000 - max(curr.list$T_PONT$x)
 yshift  <- 840000- max(curr.list$T_PONT$y)
