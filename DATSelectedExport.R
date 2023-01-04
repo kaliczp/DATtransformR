@@ -38,12 +38,8 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     usedDATtables <- unique(descript$Ref.tab)
     for(DATtable in usedDATtables) {
         current.parcel.ID <- descript[descript$Ref.tab == DATtable, "Ref.tab.line"]
+        assign(DATtable, merge(data.frame(V1 = current.parcel.ID), x[[DATtable]]))
         parcel.ID <- c(parcel.ID, current.parcel.ID)
-        ## Correct row number to parcel ID
-        parcel.row.no <- x[[DATtable]][current.parcel.ID, 1]
-        parcel.row.no <- as.numeric(parcel.row.no)
-        current.parcel.ID <- current.parcel.ID - (parcel.row.no - current.parcel.ID)
-        assign(DATtable, x[[DATtable]][current.parcel.ID, ])
         area.ID <- c(area.ID, as.numeric(get(DATtable)[ ,3]))
         ## Processed table removed
         NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == DATtable]
@@ -235,8 +231,8 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     ## T_HATAR is removed from NOTusedDATtables
     NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_HATAR"]
     borders <- x[["T_HATAR"]][DATtable.row,]
-    border.IDs <- unique(borders[, 3])
-    borderlines <- x[["T_HATARVONAL"]][border.IDs,]
+    borderlines.IDs <- unique(borders[, 3])
+    borderlines <- merge(data.frame(V1 = borderlines.IDs), x$T_HATARVONAL)
     ## T_HATARVONAL is removed from NOTusedDATtables
     NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_HATARVONAL"]
 ### Geometry completion 2 with lines and points
