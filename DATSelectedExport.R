@@ -186,6 +186,9 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
             }
         }
         if(length(TabAD.lines) > 0) {
+            ## If some AD point assigned both parcel and building
+            TabAD.lines <- unique(TabAD.lines)
+            ## Create object
             assign("T_OBJ_ATTRAD", x$T_OBJ_ATTRAD[TabAD.lines, ])
             ## AD table added
             usedDATtables <- c(usedDATtables, "T_OBJ_ATTRAD")
