@@ -73,10 +73,20 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
                     TabCB.lines <- c(TabCB.lines, which(x$T_OBJ_ATTRCB$V5 == building.ID[id]))
                 if(length(TabCB.lines) > 0) {
                     assign("T_OBJ_ATTRCB", x$T_OBJ_ATTRCB[TabCB.lines, ])
-                    if(T_OBJ_ATTRCB$V3 == 3) {
-                        area.ID <- c(area.ID, as.numeric(T_OBJ_ATTRCB$V4))
-                    } else {
-                        warning("Not area-type building accessories!")
+                    for(curr.CBline in 1:length(TabCB.lines)) {
+                        if(T_OBJ_ATTRCB[curr.CBline, 3] == 3) { # in case area
+                            area.ID <- c(area.ID, as.numeric(T_OBJ_ATTRCB[curr.CBline, 4]))
+                        } else {
+                            if(T_OBJ_ATTRCB[curr.CBline, 3] == 2 ){ # in case line
+                                line.IDs <- c(line.IDs, as.numeric(T_OBJ_ATTRCB[curr.CBline, 4]))
+                            } else {
+                                if(T_OBJ_ATTRCB[curr.CBline, 3] == 1 ){ # in case point
+                                    point.IDs <- c(point.IDs, as.numeric(T_OBJ_ATTRCB[curr.CBline, 4]))
+                                } else {
+                                    warning("Not recognise type building accessories!")
+                                }
+                            }
+                        }
                     }
                     usedDATtables <- c(usedDATtables, "T_OBJ_ATTRCB")
                 }
@@ -226,7 +236,14 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     borderlines <- x[["T_HATARVONAL"]][border.IDs,]
     ## T_HATARVONAL is removed from NOTusedDATtables
     NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_HATARVONAL"]
-### Geometry completion 2 with points
+### Geometry completion 2 with lines and points
+    ## Lines identification
+    if(length(line.IDs) > 0) {
+        lines <- merge(data.frame(V1 = line.IDs), x$T_VONAL)
+        point.IDs <- c(point.IDs, lines[,3], lines[,4])
+    ## T_VONAL is removed from NOTusedDATtables
+    NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_VONAL"]
+    }
     ## Point identification
     point.IDs <- c(point.IDs,
                    borderlines[,3],
