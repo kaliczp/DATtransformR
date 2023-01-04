@@ -205,6 +205,7 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
         }
     }
     descript <- unique(descript)
+    point.IDs <- c(point.IDs, descript[,3])
     ## T_FELIRAT is removed from NOTusedDATtables
     NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_FELIRAT"]
 ### Geometry completion 1 until T_HATARVONAL
@@ -233,6 +234,7 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     borders <- x[["T_HATAR"]][DATtable.row,]
     borderlines.IDs <- unique(borders[, 3])
     borderlines <- merge(data.frame(V1 = borderlines.IDs), x$T_HATARVONAL)
+    point.IDs <- c(point.IDs, borderlines[,3], borderlines[,4])
     ## T_HATARVONAL is removed from NOTusedDATtables
     NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_HATARVONAL"]
 ### Geometry completion 2 with lines and points
@@ -244,10 +246,6 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_VONAL"]
     }
     ## Point identification
-    point.IDs <- c(point.IDs,
-                   borderlines[,3],
-                   borderlines[,4])
-    point.IDs <- c(point.IDs, descript[,3])
     point.IDs <- unique(point.IDs)
     points <- x[["T_PONT"]][point.IDs,]
     ## T_PONT is removed from NOTusedDATtables
