@@ -256,6 +256,7 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
     T_OBJ_ATTRAC <- x$T_OBJ_ATTRAC[pointattr.row, ]
     ## T_OBJ_ATTRAC is removed from NOTusedDATtables
     NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRAC"]
+### Print list of not-used tables as a warning
     if(length(NOTusedDATtables) > 0) warning(paste("Tables are not checked!",
                                                  paste(NOTusedDATtables, collapse = ", ")
                                                  )
