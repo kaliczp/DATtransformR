@@ -93,25 +93,6 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
         ## T_OBJ_ATTRCA is removed from NOTusedDATtables
         NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRCA"]
     }
-### T_SZIMBOLUM talbe check (BC BD CA CB mentioned in this table)
-    ## Get all referenced symbols
-    if(exists("T_SZIMBOLUM", where = x)) {
-        symbols <- x$T_SZIMBOLUM[1, ]
-        for(DATtable in usedDATtables) {
-            for(id in get(DATtable)[, 1]) {
-                symbols <- rbind(symbols, x$T_SZIMBOLUM[x$T_SZIMBOLUM$Ref.tab == DATtable &
-                                                      x$T_SZIMBOLUM$Ref.tab.line == id,
-                                                      ]
-                                 )
-            }
-        }
-        symbols <- symbols[-1,]
-        if(nrow(symbols) > 0) {
-            point.IDs <- c(point.IDs, as.numeric(symbols$Pt.id))
-        }
-        ## T_SZIMBOLUM is removed from NOTusedDATtables
-        NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_SZIMBOLUM"]
-    }
 ### Check other B class (BC BD already checked) based on parcel ID-s
     ## Check BE object group
     if(exists("T_OBJ_ATTRBE", where = x)) {
@@ -156,6 +137,22 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
         }
         ## T_OBJ_ATTRBF is removed from NOTusedDATtables
         NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_OBJ_ATTRBG"]
+    }
+### T_SZIMBOLUM table check (BC BD CA CB mentioned frequently in this table, but can be any)
+    if(exists("T_SZIMBOLUM", where = x)) {
+        symbols <- x$T_SZIMBOLUM[1, ]
+        for(DATtable in usedDATtables) {
+            symbol.ref.df <- data.frame(Ref.tab.line = get(DATtable)[, 1])
+            symbol.subset <- x$T_SZIMBOLUM[x$T_SZIMBOLUM$Ref.tab == DATtable, ]
+            selected.symobls <- merge(symbol.ref.df, symbol.subset)
+            symbols <- rbind(symbols, selected.symobls)
+        }
+        symbols <- symbols[-1,]
+        if(nrow(symbols) > 0) {
+            point.IDs <- c(point.IDs, as.numeric(symbols$Pt.id))
+        }
+        ## T_SZIMBOLUM is removed from NOTusedDATtables
+        NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_SZIMBOLUM"]
     }
 ### AD objects
     ## Check AD address coordinate objects
