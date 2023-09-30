@@ -50,3 +50,14 @@ for(tti in 1:10) {
 
 selected.list <- DATSelectedExport(curr.list, c(254,253,252,(255),"257/1","257/2",256,"093/4","(204)"))
 DAT_write(selected.list, "Kivag/Nagy.dat")
+
+## transform után
+Seholse <- DAT_read("Seholse.dat")
+Seholse <- DAT_preproc(Seholse)
+
+foldr <- 115:126
+for(ttnev in 1:nrow(nevsor)) {
+    StudentFilename <- sub(" ", "",nevsor[ttnev, "Név"])
+    selected.list <- DATSelectedExport(Seholse, as.character(foldr[ttnev]))
+    DAT_write(selected.list, paste0("Egy2023/",StudentFilename,".dat"))
+}
