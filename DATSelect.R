@@ -52,7 +52,7 @@ selected.list <- DATSelectedExport(curr.list, c(254,253,252,(255),"257/1","257/2
 DAT_write(selected.list, "Kivag/Nagy.dat")
 
 ## transform után
-Seholse <- DAT_read("Seholse.dat")
+Seholse <- DAT_read("Seholseutf8.dat")
 Seholse <- DAT_preproc(Seholse)
 
 foldr <- 115:126
