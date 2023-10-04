@@ -56,8 +56,15 @@ Seholse <- DAT_read("Seholseutf8.dat")
 Seholse <- DAT_preproc(Seholse)
 
 foldr <- 115:126
+
+nevsor <- read.table("nevsor.csv", sep = "\t", head = TRUE)
+foldr <- c(192:196,199,201,229:233)
 for(ttnev in 1:nrow(nevsor)) {
-    StudentFilename <- sub(" ", "",nevsor[ttnev, "Név"])
+    StudentFilename <- gsub(" ", "",nevsor[ttnev, "Név"])
     selected.list <- DATSelectedExport(Seholse, as.character(foldr[ttnev]))
-    DAT_write(selected.list, paste0("Egy2023/",StudentFilename,".dat"))
+    DAT_write(selected.list, paste0("Torl2023/Ori/",StudentFilename,".dat"))
 }
+
+szomszed <- c("(093/5)","092/12",149:159,189:197,"198/1","198/2",199:202,"(204)","224/1","224/2",227:236,"237/1","237/2",238:241,"(242)",243)
+szomszedselected.list <- DATSelectedExport(Seholse, as.character(szomszed))
+DAT_write(szomszedselected.list, paste0("Torl2023/Ori/szomszed.dat"))
