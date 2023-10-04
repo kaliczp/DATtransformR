@@ -5,12 +5,12 @@ DATfiles <- dir(patt = "dat")
 curr.list <- DAT_read(DATfiles[3])
 curr.list <- DAT_preproc(curr.list)
 
-xshift <- 220000 - max(curr.list$T_PONT$x)
+xshift <- 260000 - max(curr.list$T_PONT$x)
 yshift  <- 840000- max(curr.list$T_PONT$y)
 
 curr.list$T_PONT$x <- curr.list$T_PONT$x + xshift
 curr.list$T_PONT$y <- curr.list$T_PONT$y + yshift
-curr.list$T_PONT <- round(eovrotate(curr.list$T_PONT, -73), 2)
+curr.list$T_PONT <- round(eovrotate(curr.list$T_PONT, -76), 2)
 
 CurrTextAngle <- as.numeric(curr.list$T_FELIRAT$Angle)
 CurrTextAngle[CurrTextAngle != 90] <- CurrTextAngle[CurrTextAngle != 90] - 73
@@ -30,7 +30,7 @@ curr.list$T_FELIRAT[ttaktline, "Text"] <- paste0("(",curr.list$T_FELIRAT[ttaktli
 
 
 outfilename <- "teszt"
-settlement <- "Seholsincs"
+settlement <- "Seholse"
 teacher <- "Kalicz Péter"
 student <- "Nagyméretarányú 2"
 act.date <- Sys.Date()
