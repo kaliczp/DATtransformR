@@ -81,10 +81,26 @@ szomszed <- c(59:74,"75/1","75/2","75/3", # Sor
            "77/1", "77/5", "77/7", "78/1", "79/1", "80/4", "80/5", # Első alappontig délről
            "81/1", "82/1", "83/1", "84/1", "85/1", "86/2", "87/1", "88/2", # Második pontig délről
            "89/1", "90/1", 91, # plusz "92/2", "93/2", "94/1", "95/1", # Házak délről
-           # "(96)", #Közút
-           "029/32", "029/33", "029/34"
+                                        # "(96)", #Közút kelet
+           "(026)", # út észak
+           "029/29", "029/30", "029/31", "029/32", "029/33", "029/34", "025/3" # Földek észak
            )
 
 szomszedselected.list <- DATSelectedExport(Seholse, as.character(szomszed))
 DAT_write(szomszedselected.list, paste0("HazFel2023/Ori/szomszed.dat"))
 ## recode u8..l2/cl HazFel2023/Ori/szomszed.dat
+
+## Mentés épület törlés FreeTRben
+## Átmásolás, hogy legyen meg a weben
+## cp szomszedok.dat 01szomszedok.dat
+## Visszaolvasás és csak az aktuális
+## recode l2/CR-LF..u8 szomszedok.dat
+SzomNoHouse <- DAT_read("HazFel2023/OriNohouse/szomszedok.dat")
+SzomNoHouse <- DAT_preproc(SzomNoHouse)
+
+foldr <- c(63:74)
+for(ttnev in 1:nrow(nevsor)) {
+    StudentFilename <- gsub(" ", "",nevsor[ttnev, "Név"])
+    selected.list <- DATSelectedExport(SzomNoHouse, as.character(foldr[ttnev]))
+    DAT_write(selected.list, paste0("HazFel2023/OriNohouse/",StudentFilename,".dat"))
+}
