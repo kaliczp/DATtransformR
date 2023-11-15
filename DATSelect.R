@@ -25,11 +25,11 @@ const.shift <- rnorm(2, sd = 0.06)
 
 Hmean <- mean(curr.list$T_PONT[curr.list$T_PONT$H > 1, "H"], na.rm = TRUE)
 ## foldr <- c(139,"207/2",40,42,"104/3",48,184,245,246,91,"54/9","54/8")
-foldr <- c(140,"207/4",39,41,"103/2","49/1",183,"244/2",247,"92/1","54/8","54/9")
+## foldr <- c(140,"207/4",39,41,"103/2","49/1",183,"244/2",247,"92/1","54/8","54/9")
 
 foldrok <- sub("/", "_", foldr)
 KezdoPontszam <- 2000
-for(tti in 1:10) {
+for(tti in 1:12) {
     coo.sel <- DATSelect(curr.list, ID = foldr[tti])[,c("x","y")]
     coo.sel[,"x"] <- coo.sel[,"x"] + const.shift[1] + rnorm(nrow(coo.sel), sd = 0.02)
     coo.sel[,"y"] <- coo.sel[,"y"] + const.shift[2] + rnorm(nrow(coo.sel), sd = 0.02)
@@ -57,6 +57,7 @@ Seholse <- DAT_preproc(Seholse)
 
 foldr <- 115:126
 
+## Ép törlés utcanév nem volt
 nevsor <- read.table("nevsor.csv", sep = "\t", head = TRUE)
 foldr <- c(192:196,199,201,229:233)
 for(ttnev in 1:nrow(nevsor)) {
@@ -71,3 +72,19 @@ DAT_write(szomszedselected.list, paste0("Torl2023/Ori/szomszed.dat"))
 
 ## FreeTR megnyitás vagy:
 ## recode u8..l2/cl Torl2023/Ori/szomszed.dat
+
+### Épület felt
+## Telj ter kiválaszt
+szomszed <- c(59:74,"75/1","75/2","75/3", # Sor
+           "(027/3)", "(027/4)", # Nyugati út és szántó
+           "(76)", # utca délről Hársfa
+           "77/1", "77/5", "77/7", "78/1", "79/1", "80/4", "80/5", # Első alappontig délről
+           "81/1", "82/1", "83/1", "84/1", "85/1", "86/2", "87/1", "88/2", # Második pontig délről
+           "89/1", "90/1", 91, # plusz "92/2", "93/2", "94/1", "95/1", # Házak délről
+           # "(96)", #Közút
+           "029/32", "029/33", "029/34"
+           )
+
+szomszedselected.list <- DATSelectedExport(Seholse, as.character(szomszed))
+DAT_write(szomszedselected.list, paste0("HazFel2023/Ori/szomszed.dat"))
+## recode u8..l2/cl HazFel2023/Ori/szomszed.dat
