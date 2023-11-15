@@ -153,6 +153,8 @@ DATSelectedExport <- function(x, ID = c(139,140,"(204)")) {
         }
         ## T_SZIMBOLUM is removed from NOTusedDATtables
         NOTusedDATtables  <- NOTusedDATtables[!NOTusedDATtables == "T_SZIMBOLUM"]
+    } else {
+        symbols <- data.frame()
     }
 ### AD objects
     ## Check AD address coordinate objects

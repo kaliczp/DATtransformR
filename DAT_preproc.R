@@ -9,8 +9,10 @@ DAT_preproc <- function(x) {
     x$T_FELIRAT$Ref.tab.line <- as.numeric(x$T_FELIRAT$Ref.tab.line)
     x$T_FELIRAT$Type <- as.numeric(x$T_FELIRAT$Type)
     ## T_SZIMBOLUM
+    if(exists("T_SZIMBOLUM", where = x)) {
     names(x$T_SZIMBOLUM) <- c("Nr", "Key", "Pt.id", "Angle", "Ref.tab", "Ref.tab.line", "Valid")
     x$T_SZIMBOLUM$Angle <- as.numeric(x$T_SZIMBOLUM$Angle)
+    }
     x
 }
 
