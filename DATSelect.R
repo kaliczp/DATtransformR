@@ -104,3 +104,13 @@ for(ttnev in 1:nrow(nevsor)) {
     selected.list <- DATSelectedExport(SzomNoHouse, as.character(foldr[ttnev]))
     DAT_write(selected.list, paste0("HazFel2023/OriNohouse/",StudentFilename,".dat"))
 }
+
+
+## Összevon
+foldr <- c(63:74)
+for(ttnev in 1:nrow(nevsor)) {
+    StudentFilename <- gsub(" ", "",nevsor[ttnev, "Név"])
+    selected.list <- DATSelectedExport(SzomNoHouse, as.character(c(foldr[ttnev],foldr[ttnev]+1)))
+    DAT_write(selected.list, paste0("Összevon2023/",StudentFilename,".dat"))
+}
+
