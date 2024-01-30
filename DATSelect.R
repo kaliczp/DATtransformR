@@ -113,6 +113,7 @@ for(ttnev in 1:nrow(nevsor)) {
     selected.list <- DATSelectedExport(SzomNoHouse, as.character(c(foldr[ttnev],foldr[ttnev]+1)))
     DAT_write(selected.list, paste0("Összevon2023/",StudentFilename,".dat"))
 }
+## recode u8..l2/cl minden.dat
 
 ## Külter oszt
 foldr <- c("050/26","050/27","050/28","050/33","050/24","050/23","050/22","050/21","050/20","050/19","050/18","050/9")
@@ -138,4 +139,4 @@ szomszed <- c("050/32","050/31","050/30", # Észak közúton belül
 
 szomszedselected.list <- DATSelectedExport(Seholse, szomszed)
 DAT_write(szomszedselected.list, paste0("Küloszt2023/szomszed.dat"))
-## recode u8..l2/cl HazFel2023/Ori/szomszed.dat
+## recode u8..l2/cl szomszed.dat
