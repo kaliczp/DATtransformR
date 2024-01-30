@@ -114,3 +114,28 @@ for(ttnev in 1:nrow(nevsor)) {
     DAT_write(selected.list, paste0("Összevon2023/",StudentFilename,".dat"))
 }
 
+## Külter oszt
+foldr <- c("050/26","050/27","050/28","050/33","050/24","050/23","050/22","050/21","050/20","050/19","050/18","050/9")
+for(ttnev in 1:nrow(nevsor)) {
+    StudentFilename <- gsub(" ", "",nevsor[ttnev, "Név"])
+    selected.list <- DATSelectedExport(Seholse, foldr[ttnev])
+    DAT_write(selected.list, paste0("Küloszt2023/",StudentFilename,".dat"))
+}
+
+szomszed <- c("050/32","050/31","050/30", # Észak közúton belül
+              "029/8", "029/9", "029/10","029/11", "029/2", "029/3", "029/42", # Észak úton kívül
+              "029/4", "029/12", "029/17", "029/18", "029/19", "029/20", "029/21", "029/22", # Észak úton kívül
+              foldr,
+              "(050/17)", "(070)", "(066)",# K-i utak
+              "069/3", "069/2", "069/5", "069/6","069/7", "069/9","050/15", "050/16", # K-i földek
+               "069/11", "069/12", "069/13", "069/14",# K-i földek
+              "049/1", "050/14", # Nyi földek
+              "050/13", "(048)", # Nyi út
+              "050/35", "050/7", "050/8", "(074)", "075", # D-i rész
+              "050/2", "050/3", "050/4", "050/5", "050/6", # D-i rész
+              "(044)" # Észak közút
+              )
+
+szomszedselected.list <- DATSelectedExport(Seholse, szomszed)
+DAT_write(szomszedselected.list, paste0("Küloszt2023/szomszed.dat"))
+## recode u8..l2/cl HazFel2023/Ori/szomszed.dat
