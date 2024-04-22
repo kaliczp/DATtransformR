@@ -7,19 +7,20 @@ curr.list <- DAT_preproc(curr.list)
 
 xshift <- 260000 - max(curr.list$T_PONT$x)
 yshift  <- 840000- max(curr.list$T_PONT$y)
+angleshift <- -74
 
 curr.list$T_PONT$x <- curr.list$T_PONT$x + xshift
 curr.list$T_PONT$y <- curr.list$T_PONT$y + yshift
-curr.list$T_PONT <- round(eovrotate(curr.list$T_PONT, -76), 2)
+curr.list$T_PONT <- round(eovrotate(curr.list$T_PONT, angleshift), 2)
 
 CurrTextAngle <- as.numeric(curr.list$T_FELIRAT$Angle)
-CurrTextAngle[CurrTextAngle != 90] <- CurrTextAngle[CurrTextAngle != 90] - 73
+CurrTextAngle[CurrTextAngle != 90] <- CurrTextAngle[CurrTextAngle != 90] + angleshift
 
 CurrTextAngle[CurrTextAngle < 0] <- CurrTextAngle[CurrTextAngle < 0] + 180
 curr.list$T_FELIRAT$Angle <- round(CurrTextAngle, 1)
 
 CurrTextAngle <- curr.list$T_SZIMBOLUM$Angle
-CurrTextAngle[CurrTextAngle != 90] <- CurrTextAngle[CurrTextAngle != 90] - 73
+CurrTextAngle[CurrTextAngle != 90] <- CurrTextAngle[CurrTextAngle != 90] + angleshift
 CurrTextAngle[CurrTextAngle < 0] <- CurrTextAngle[CurrTextAngle < 0] + 180
 curr.list$T_SZIMBOLUM$Angle <- round(CurrTextAngle, 1)
 
